@@ -10,10 +10,10 @@ import {
 } from 'lucide-react';
 
 /**
- * FELIX v7.8 (Optimized Monetization)
- * - AdSense Slot: 6400805398
+ * FELIX v7.9 (Layout Refinement)
+ * - AdSense Slot: 6400805398 moved to bottom above footer.
  * - AdSense Publisher: ca-pub-6389348477896619
- * - Logic: Separated <script> initialization into useEffect for React compatibility.
+ * - High-Contrast Vibrant Desks: Indigo/Slate palette for maximum visibility.
  */
 
 export default function App() {
@@ -50,8 +50,7 @@ export default function App() {
     script.async = true;
     document.body.appendChild(script);
 
-    // 2. AdSense Initialization (The "push" command)
-    // We wrap this in a try-catch to prevent crashes if ads are blocked
+    // 2. AdSense Initialization
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
@@ -287,19 +286,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* AD SLOT (FREE TIER) */}
-      <div className="w-full bg-slate-50 py-4 flex justify-center no-print shrink-0 border-b">
-        <div className="w-full max-w-4xl min-h-[90px] bg-white border rounded-xl flex items-center justify-center overflow-hidden">
-          {/* ADSENSE UNIT */}
-          <ins className="adsbygoogle"
-               style={{ display: 'block', width: '100%', height: '90px' }}
-               data-ad-client="ca-pub-6389348477896619"
-               data-ad-slot="6400805398"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-        </div>
-      </div>
-
       {/* OVERLAY CARDS */}
       <div className="relative z-50 no-print">
         {activeMenu && <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" onClick={() => setActiveMenu(null)}></div>}
@@ -408,8 +394,21 @@ export default function App() {
           </div>
         </div>
 
+        {/* AD SLOT (FREE TIER) - REPOSITIONED TO BOTTOM */}
+        <div className="w-full bg-slate-50 py-6 flex justify-center no-print shrink-0 border-t mt-12">
+          <div className="w-full max-w-4xl min-h-[90px] bg-white border rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+            {/* ADSENSE UNIT */}
+            <ins className="adsbygoogle"
+                style={{ display: 'block', width: '100%', height: '90px' }}
+                data-ad-client="ca-pub-6389348477896619"
+                data-ad-slot="6400805398"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+
         {/* FOOTER */}
-        <footer className="w-full py-20 text-center no-print flex flex-col items-center gap-5 shrink-0 bg-transparent">
+        <footer className="w-full py-16 text-center no-print flex flex-col items-center gap-5 shrink-0 bg-transparent">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg ring-4 ring-indigo-100 transition-transform hover:rotate-12 hover:scale-110 cursor-pointer"><LayoutGrid size={24} /></div>
             <span className="text-sm font-black text-slate-900 uppercase tracking-[0.4em] pt-0.5">Felix By Rally</span>
