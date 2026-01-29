@@ -10,16 +10,16 @@ import {
 } from 'lucide-react';
 
 /**
- * FELIX v7.2 (Export & Print Engine 2.0)
+ * FELIX v7.5 (High-Contrast Vibrant Edition)
  * Features:
- * - High-Fidelity PNG Export: Now captures student names by syncing input values to cloned text.
- * - Robust Print Trigger: Focused window command with keyboard fallback guidance.
- * - Intelligent State Merger: Preserves manual names during AI sync.
- * - Symmetrical Navigation: Optimized for Bronx & Westchester educator workflows.
+ * - Ultra-High Visibility: Desks now use Slate-900 and Indigo-600 for maximum contrast.
+ * - Vibrant States: Distinct visual language for used vs. unused desks.
+ * - Accessibility Focus: Designed for easy viewing in brightly lit classrooms or on projectors.
+ * - Environment Compatibility: Maintain empty apiKey for environment injection.
  */
 
 export default function App() {
-  const apiKey = ""; // API key provided by environment
+  const apiKey = ""; 
   const gridRef = useRef(null);
 
   // --- UI Visibility State ---
@@ -81,14 +81,13 @@ export default function App() {
     setIsPrinting(true); 
   };
 
-  const executePrint = () => { 
-    // Aggressive focus and delay to ensure the browser handles the command in sandboxed/preview modes
+  const executePrint = () => {
     window.focus(); 
     setTimeout(() => {
         try {
             window.print(); 
         } catch (e) {
-            setError("Standard print command failed. Please use Ctrl+P / Cmd+P.");
+            setError("Print command blocked. Use Ctrl+P / Cmd+P.");
         }
     }, 200);
   };
@@ -96,7 +95,7 @@ export default function App() {
   const handleExportImage = async () => {
     setIsExportOpen(false);
     if (!window.html2canvas) {
-        setError("Export tool still loading... please wait.");
+        setError("Loading high-res engine...");
         return;
     }
     
@@ -106,8 +105,6 @@ export default function App() {
             backgroundColor: '#ffffff', 
             scale: 2, 
             useCORS: true,
-            // CRITICAL FIX: html2canvas doesn't capture input values by default.
-            // This 'onclone' hook swaps inputs for static divs during the capture process.
             onclone: (clonedDoc) => {
               const inputs = clonedDoc.querySelectorAll('input[type="text"]');
               inputs.forEach(input => {
@@ -115,7 +112,6 @@ export default function App() {
                 const textNode = clonedDoc.createElement('div');
                 textNode.innerText = input.value;
                 textNode.style.cssText = input.style.cssText;
-                // Preserve styling from Tailwind classes
                 textNode.className = input.className;
                 input.style.display = 'none';
                 parent.appendChild(textNode);
@@ -127,7 +123,7 @@ export default function App() {
         link.href = canvas.toDataURL('image/png');
         link.click();
     } catch (err) {
-        setError("Image generation failed. Try standard print or PDF.");
+        setError("PNG Export failed. Use Print/PDF instead.");
     }
   };
 
@@ -176,7 +172,8 @@ export default function App() {
         }
       } catch (err) {
         if (retries < 3) {
-          setTimeout(() => fetchWithRetry(retries + 1), 1000);
+          const delay = Math.pow(2, retries) * 1000;
+          setTimeout(() => fetchWithRetry(retries + 1), delay);
         } else {
           setError("Brain sync failed. Please try again.");
           setIsGenerating(false);
@@ -190,12 +187,9 @@ export default function App() {
     try {
       const cleanJson = sourceText.replace(/```json|```/g, '').trim();
       const data = JSON.parse(cleanJson);
-      
       const newDesks = new Set(desks);
       Object.keys(data.assignments || {}).forEach(coord => newDesks.add(coord));
-      
       const mergedSeats = { ...seats, ...(data.assignments || {}) };
-      
       setDesks(newDesks);
       setSeats(mergedSeats);
       setStudentMetadata(prev => ({ ...prev, ...(data.metadata || {}) }));
@@ -240,7 +234,7 @@ export default function App() {
   };
 
   return (
-    <div className={`h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden flex flex-col relative ${isPrinting ? 'bg-white' : ''}`}>
+    <div className={`h-screen bg-slate-100 text-slate-900 font-sans overflow-hidden flex flex-col relative ${isPrinting ? 'bg-white' : ''}`}>
       
       {/* PRINT TOOLBAR */}
       {isPrinting && (
@@ -323,16 +317,16 @@ export default function App() {
       </div>
 
       {/* MAIN GRID Area */}
-      <main className={`flex-1 relative overflow-y-auto bg-slate-50/50 flex flex-col items-center pt-12 ${isPrinting ? 'overflow-visible bg-white pt-0' : ''}`}>
+      <main className={`flex-1 relative overflow-y-auto bg-slate-100 flex flex-col items-center pt-12 ${isPrinting ? 'overflow-visible bg-white pt-0' : ''}`}>
         <div className={`max-w-[1400px] w-full px-6 md:px-12 flex-1 flex flex-col items-center ${isPrinting ? 'px-0' : ''}`}>
-          <div ref={gridRef} className={`w-full bg-white rounded-[32px] border border-slate-200 shadow-sm p-8 md:p-12 relative min-h-[700px] transition-all flex flex-col print-container print-layout-card ${isPrinting ? 'rounded-none border-none shadow-none' : ''}`}>
-            <div className="w-full max-w-2xl h-14 bg-slate-50 border-2 border-slate-100 mx-auto mb-20 rounded-2xl flex items-center justify-center gap-4 shrink-0">
-              <Monitor className="text-slate-300" size={24} />
-              <span className="text-slate-400 font-bold text-[11px] uppercase tracking-[0.5em]">Classroom Front / Display Area</span>
+          <div ref={gridRef} className={`w-full bg-white rounded-[32px] border-2 border-slate-300 shadow-sm p-8 md:p-12 relative min-h-[700px] transition-all flex flex-col print-container print-layout-card ${isPrinting ? 'rounded-none border-none shadow-none' : ''}`}>
+            <div className="w-full max-w-2xl h-14 bg-slate-900 border-2 border-slate-800 mx-auto mb-20 rounded-2xl flex items-center justify-center gap-4 shrink-0 shadow-lg">
+              <Monitor className="text-white opacity-80" size={24} />
+              <span className="text-white font-black text-[11px] uppercase tracking-[0.6em]">Front of Classroom</span>
             </div>
 
             <div className="flex-1 flex items-start justify-center overflow-x-auto pb-10 print:overflow-visible">
-              <div className="grid gap-4 transition-all duration-500" style={{ gridTemplateColumns: `repeat(${gridSize.cols}, minmax(0, 1fr))`, maxWidth: `${gridSize.cols * 110}px`, width: '100%' }}>
+              <div className="grid gap-5 transition-all duration-500" style={{ gridTemplateColumns: `repeat(${gridSize.cols}, minmax(0, 1fr))`, maxWidth: `${gridSize.cols * 115}px`, width: '100%' }}>
                 {Array.from({ length: gridSize.rows }).map((_, r) => (
                   Array.from({ length: gridSize.cols }).map((_, c) => {
                     const key = `${r}-${c}`;
@@ -341,15 +335,37 @@ export default function App() {
                     const metadata = studentMetadata[key];
 
                     return (
-                      <div key={key} onClick={() => !studentName && toggleDesk(r, c)} className={`aspect-[1.3] rounded-2xl transition-all duration-300 flex items-center justify-center relative group ${isDesk ? 'bg-white border-[3px] border-slate-300 shadow-sm' : isPrinting ? 'opacity-0' : 'bg-slate-50 border border-dashed border-slate-100 opacity-40 hover:opacity-100 cursor-pointer'} ${isDesk && metadata?.isPriority ? 'border-blue-600 bg-blue-50/20' : ''}`}>
+                      <div 
+                        key={key} 
+                        onClick={() => !studentName && toggleDesk(r, c)} 
+                        className={`
+                          aspect-[1.3] rounded-2xl transition-all duration-300 flex items-center justify-center relative group
+                          ${isDesk 
+                            ? 'bg-white border-[4px] border-indigo-600 shadow-xl ring-2 ring-indigo-50' 
+                            : isPrinting ? 'opacity-0' : 'bg-slate-300/80 border-2 border-slate-400 opacity-90 hover:bg-indigo-100 hover:border-indigo-400 cursor-pointer'} 
+                          ${isDesk && metadata?.isPriority ? 'border-amber-500 bg-amber-50/20 ring-amber-100' : ''}
+                        `}
+                      >
                         {isDesk && (
                           <div className="w-full h-full flex flex-col items-center justify-center px-2 py-1 text-center overflow-hidden">
-                            <input type="text" value={studentName || ''} placeholder="..." onChange={(e) => handleManualEdit(key, e.target.value)} className={`w-full text-center bg-transparent border-none text-[11px] font-black uppercase focus:ring-0 placeholder:text-slate-200 ${studentName ? 'text-slate-800' : 'text-slate-200'}`} />
-                            {metadata?.isPriority && <div className="absolute top-2 right-2 p-1 bg-blue-600 rounded-full shadow-lg no-print"><CheckCircle2 className="w-2.5 h-2.5 text-white" /></div>}
-                            {metadata?.type && <span className="absolute bottom-1 right-2 text-[6px] font-black text-blue-500 print:hidden">{metadata.type}</span>}
+                            <input 
+                              type="text" 
+                              value={studentName || ''} 
+                              placeholder="..." 
+                              onChange={(e) => handleManualEdit(key, e.target.value)} 
+                              className={`w-full text-center bg-transparent border-none text-[12px] font-black uppercase tracking-tight focus:ring-0 placeholder:text-slate-300 ${studentName ? 'text-slate-900' : 'text-indigo-400'}`} 
+                            />
+                            {metadata?.isPriority && (
+                              <div className="absolute -top-2 -right-2 p-1.5 bg-amber-500 rounded-full shadow-lg no-print z-10 border-2 border-white">
+                                <CheckCircle2 className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                            {metadata?.type && (
+                              <span className="absolute bottom-1 right-2 text-[7px] font-black text-amber-600 print:hidden uppercase">{metadata.type}</span>
+                            )}
                           </div>
                         )}
-                        <span className="absolute text-[7px] font-mono font-bold text-slate-200 -bottom-4 opacity-50 no-print">{r}:{c}</span>
+                        <span className="absolute text-[8px] font-mono font-black text-slate-800 -bottom-4 opacity-50 no-print">{r}:{c}</span>
                       </div>
                     );
                   })
@@ -358,12 +374,15 @@ export default function App() {
             </div>
 
             {/* Print Only Footer */}
-            <div className={`hidden print:flex justify-between items-end mt-24 pt-8 border-t-2 border-slate-100 text-[10px] text-slate-400 font-bold uppercase tracking-widest ${isPrinting ? 'flex' : 'hidden'}`}>
+            <div className={`hidden print:flex justify-between items-end mt-24 pt-8 border-t-4 border-slate-900 text-[10px] text-slate-900 font-black uppercase tracking-widest ${isPrinting ? 'flex' : 'hidden'}`}>
               <div>
-                <p className="text-slate-900 font-black tracking-tight">{details.className} • {details.period}</p>
-                <p className="mt-1 opacity-50 tracking-tighter text-[7px]">Engineered by Felix Intelligence • © Charles Herzek</p>
+                <p className="text-xl font-black tracking-tighter">{details.className} • {details.period}</p>
+                <p className="mt-1 opacity-60 tracking-tighter text-[8px]">Engineered by Felix Intelligence • © Charles Herzek</p>
               </div>
-              <p>Chart Effective: {details.date}</p>
+              <div className="text-right">
+                <p>Chart Effective: {details.date}</p>
+                <p className="text-[7px] opacity-40 mt-1 italic">Rally Professional Suite</p>
+              </div>
             </div>
           </div>
         </div>
@@ -371,33 +390,35 @@ export default function App() {
         {/* FOOTER */}
         <footer className="w-full py-20 text-center no-print flex flex-col items-center gap-5 shrink-0 bg-transparent">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-400 rounded-xl flex items-center justify-center text-white shadow-sm ring-4 ring-slate-100 transition-transform hover:rotate-12"><LayoutGrid size={24} /></div>
-            <span className="text-sm font-bold text-slate-500 uppercase tracking-[0.3em] pt-0.5">Felix By Rally</span>
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg ring-4 ring-indigo-100 transition-transform hover:rotate-12 hover:scale-110 cursor-pointer"><LayoutGrid size={24} /></div>
+            <span className="text-sm font-black text-slate-900 uppercase tracking-[0.4em] pt-0.5">Felix By Rally</span>
           </div>
           <div className="text-center space-y-2 px-6">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">© {new Date().getFullYear() === 2026 ? '2026' : `2024 - ${new Date().getFullYear()}`} Charles Herzek. All Rights Reserved.</p>
-            <p className="text-[11px] font-bold text-[#1a73e8] uppercase tracking-[0.15em] opacity-80 max-w-2xl leading-relaxed">Built for the Bronx & Westchester Educational Community</p>
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.25em]">© {new Date().getFullYear() === 2026 ? '2026' : `2024 - ${new Date().getFullYear()}`} Charles Herzek. All Rights Reserved.</p>
+            <div className="flex items-center justify-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <p className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.2em] opacity-90">Rally Ecosystem Authorized</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-1 opacity-40 text-slate-300"><span className="text-[9px] font-bold uppercase tracking-widest">Intelligence powered by</span><span className="font-black text-[11px] italic tracking-tighter uppercase">Gemini 2.5 Flash</span></div>
         </footer>
       </main>
 
       {/* Help Modal */}
       {isHelpModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[200] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden flex flex-col border border-slate-100">
-            <div className="p-8 border-b flex justify-between items-center bg-slate-50/50">
-              <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">Intelligence Guide</h2>
-              <X size={24} className="text-slate-400 cursor-pointer hover:text-slate-600" onClick={() => setIsHelpModalOpen(false)} />
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-[200] flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden flex flex-col border-4 border-indigo-600">
+            <div className="p-8 border-b flex justify-between items-center bg-indigo-50/30">
+              <h2 className="text-3xl font-black text-indigo-900 tracking-tighter uppercase italic">Intelligence Guide</h2>
+              <X size={32} className="text-slate-400 cursor-pointer hover:text-indigo-600 transition-colors" onClick={() => setIsHelpModalOpen(false)} />
             </div>
             <div className="p-10 space-y-8 overflow-y-auto max-h-[70vh]">
               <div className="space-y-4">
-                <h4 className="font-bold text-slate-800 text-lg tracking-tight">How to use State-Aware Sync:</h4>
-                <p className="text-sm text-slate-500 leading-relaxed font-medium">Felix remembers student names you've placed manually. For new rosters, mention <strong>IEP</strong>, <strong>504</strong>, or <strong>ELL</strong> next to names for prioritized front-row placement.</p>
+                <h4 className="font-black text-indigo-900 text-xl tracking-tight uppercase">How to use State-Aware Sync:</h4>
+                <p className="text-base text-slate-600 leading-relaxed font-bold">Felix remembers student names you've placed manually. For new rosters, mention <strong>IEP</strong>, <strong>504</strong>, or <strong>ELL</strong> next to names for prioritized front-row placement.</p>
               </div>
             </div>
             <div className="p-8 bg-slate-50 border-t flex justify-end">
-              <button onClick={() => setIsHelpModalOpen(false)} className="px-10 py-3 bg-slate-900 text-white rounded-2xl font-black text-sm shadow-xl">GOT IT</button>
+              <button onClick={() => setIsHelpModalOpen(false)} className="px-12 py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm shadow-xl hover:bg-indigo-700 transition-all uppercase tracking-widest">Understood</button>
             </div>
           </div>
         </div>
