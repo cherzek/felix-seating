@@ -10,12 +10,10 @@ import {
 } from 'lucide-react';
 
 /**
- * FELIX v7.5 (High-Contrast Vibrant Edition)
- * Features:
- * - Ultra-High Visibility: Desks now use Slate-900 and Indigo-600 for maximum contrast.
- * - Vibrant States: Distinct visual language for used vs. unused desks.
- * - Accessibility Focus: Designed for easy viewing in brightly lit classrooms or on projectors.
- * - Environment Compatibility: Maintain empty apiKey for environment injection.
+ * FELIX v7.8 (Optimized Monetization)
+ * - AdSense Slot: 6400805398
+ * - AdSense Publisher: ca-pub-6389348477896619
+ * - Logic: Separated <script> initialization into useEffect for React compatibility.
  */
 
 export default function App() {
@@ -44,13 +42,23 @@ export default function App() {
     date: new Date().toLocaleDateString(),
   });
 
-  // --- Script Injection for Exports ---
+  // --- Ad & Script Effects ---
   useEffect(() => {
+    // 1. html2canvas for exports
     const script = document.createElement('script');
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
     script.async = true;
     document.body.appendChild(script);
 
+    // 2. AdSense Initialization (The "push" command)
+    // We wrap this in a try-catch to prevent crashes if ads are blocked
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.log("AdSense initialization pending or blocked.");
+    }
+
+    // 3. Global Print Styles
     const style = document.createElement('style');
     style.innerHTML = `
       @media print {
@@ -279,6 +287,19 @@ export default function App() {
         </div>
       </header>
 
+      {/* AD SLOT (FREE TIER) */}
+      <div className="w-full bg-slate-50 py-4 flex justify-center no-print shrink-0 border-b">
+        <div className="w-full max-w-4xl min-h-[90px] bg-white border rounded-xl flex items-center justify-center overflow-hidden">
+          {/* ADSENSE UNIT */}
+          <ins className="adsbygoogle"
+               style={{ display: 'block', width: '100%', height: '90px' }}
+               data-ad-client="ca-pub-6389348477896619"
+               data-ad-slot="6400805398"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+      </div>
+
       {/* OVERLAY CARDS */}
       <div className="relative z-50 no-print">
         {activeMenu && <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" onClick={() => setActiveMenu(null)}></div>}
@@ -317,7 +338,7 @@ export default function App() {
       </div>
 
       {/* MAIN GRID Area */}
-      <main className={`flex-1 relative overflow-y-auto bg-slate-100 flex flex-col items-center pt-12 ${isPrinting ? 'overflow-visible bg-white pt-0' : ''}`}>
+      <main className={`flex-1 relative overflow-y-auto bg-slate-100 flex flex-col items-center pt-8 ${isPrinting ? 'overflow-visible bg-white pt-0' : ''}`}>
         <div className={`max-w-[1400px] w-full px-6 md:px-12 flex-1 flex flex-col items-center ${isPrinting ? 'px-0' : ''}`}>
           <div ref={gridRef} className={`w-full bg-white rounded-[32px] border-2 border-slate-300 shadow-sm p-8 md:p-12 relative min-h-[700px] transition-all flex flex-col print-container print-layout-card ${isPrinting ? 'rounded-none border-none shadow-none' : ''}`}>
             <div className="w-full max-w-2xl h-14 bg-slate-900 border-2 border-slate-800 mx-auto mb-20 rounded-2xl flex items-center justify-center gap-4 shrink-0 shadow-lg">
